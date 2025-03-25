@@ -12,14 +12,24 @@ type Config struct {
 }
 
 type PrometheusConfig struct {
-	ServerIP     string         `yaml:"server_ip"`
-	Port         string         `yaml:"port"`
-	Query        []string       `yaml:"query"`
-	Target       []TargetConfig `yaml:"target"`
-	Interval     int            `yaml:"interval"`
-	Step         int            `yaml:"step"`
-	StoragePath  string         `yaml:"storage_path"`
-	DatafileName string         `yaml:"datafile_name"`
+	ServerIP       string          `yaml:"server_ip"`
+	Port           string          `yaml:"port"`
+	OutputDir      string          `yaml:"output_dir"`
+	QueryTemplates []QueryTemplate `yaml:"query_templates"`
+	Target         []TargetConfig  `yaml:"target"`
+}
+
+type QueryTemplate struct {
+	Name           string            `yaml:"name"`
+	Expression     string            `yaml:"expression"`
+	Labels         []LabelDefinition `yaml:"labels"`
+	FilenameSuffix string            `yaml:"filename_suffix"`
+}
+
+type LabelDefinition struct {
+	Key       string `yaml:"key"`
+	ValueFrom string `yaml:"value_from"`
+	Match     string `yaml:"match"`
 }
 
 type TargetConfig struct {
@@ -32,13 +42,13 @@ type TargetConfig struct {
 func LoadConfig(path string) (*Config, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read YAML file: %w", err)
+		return nil, fmt.Errorf("failed to read config: %w", err)
 	}
 
 	var config Config
 	err = yaml.Unmarshal(data, &config)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse YAML: %w", err)
+		return nil, fmt.Errorf("failed to parse yaml: %w", err)
 	}
 
 	return &config, nil

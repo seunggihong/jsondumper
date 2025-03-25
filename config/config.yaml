@@ -1,21 +1,19 @@
 prometheus:
   server_ip: '192.168.9.10'
   port: '31003'
-  query:
-    - 'sum(rate(container_cpu_usage_seconds_total[5m]))'
-    - 'sum(container_memory_usage_bytes)'
+  output_dir: './output'
+  query_templates:
+    - name: "cpu_regex"
+      expression: 'sum by(pod)(rate(container_cpu_usage_seconds_total{%s}[5m]))'
+      labels:
+        - key: "pod"
+          value_from: "pod_name"
+          match: "=~"
+        - key: "namespace"
+          value_from: "namespace"
+          match: "="
+      filename_suffix: "cpu"
   target:
-    - type: 'pod'
-      pod_name: 'pod-1'
-      namespace: 'ns-1'
-    - type: 'pod'
-      pod_name: 'pod-2'
-      namespace: 'ns-2'
-    - type: 'node'
-      node_name: 'node-1'
-    - type: 'node'
-      node_name: 'node-2'
-  interval: 300
-  step: 30
-  storage_path: '/data/metrics'
-  datafile_name: 'metrics.json'
+    - type: "pod"
+      pod_name: "test-.*-0"
+      namespace: "kubeflow-user-example-com"
