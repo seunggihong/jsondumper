@@ -1,7 +1,6 @@
 # JsonDumper
 
-This Go-based tool reads a YAML configuration file to dynamically generate and execute PromQL queries against a Prometheus server.  
-Query results are saved as JSON files in a specified output directory.
+This project is a Go application that automates Prometheus monitoring queries. It reads a flexible YAML configuration file that defines query templates and monitoring targets (such as pods or nodes), dynamically builds valid PromQL expressions, sends them to a Prometheus server, and saves the responses in structured JSON files. It is designed for extensibility and can support any Prometheus-compatible metrics or targets.
 
 ---
 
